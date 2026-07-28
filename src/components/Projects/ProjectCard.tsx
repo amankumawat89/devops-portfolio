@@ -54,15 +54,17 @@ export default function ProjectCard({ project, onViewDetails, onOpenGallery }: P
             </div>
 
             <div className="flex items-center gap-3 mt-auto">
-              <a
-                href={project.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-surface-secondary border border-border text-text text-sm font-medium rounded-lg hover:bg-surface-secondary/80 transition-colors"
-              >
-                <Github size={14} />
-                GitHub
-              </a>
+              {project.github && (
+                <a
+                  href={project.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-surface-secondary border border-border text-text text-sm font-medium rounded-lg hover:bg-surface-secondary/80 transition-colors"
+                >
+                  <Github size={14} />
+                  GitHub
+                </a>
+              )}
               <button
                 onClick={() => onViewDetails(project)}
                 className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/20 text-primary text-sm font-medium rounded-lg hover:bg-primary/20 transition-colors"
@@ -125,15 +127,17 @@ export default function ProjectCard({ project, onViewDetails, onOpenGallery }: P
         </div>
 
         <div className="flex items-center gap-2 mt-auto">
-          <a
-            href={project.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-surface-secondary border border-border text-text text-xs font-medium rounded-lg hover:bg-surface-secondary/80 transition-colors"
-          >
-            <Github size={12} />
-            GitHub
-          </a>
+          {project.github && (
+            <a
+              href={project.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-surface-secondary border border-border text-text text-xs font-medium rounded-lg hover:bg-surface-secondary/80 transition-colors"
+            >
+              <Github size={12} />
+              GitHub
+            </a>
+          )}
           <button
             onClick={() => onViewDetails(project)}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 border border-primary/20 text-primary text-xs font-medium rounded-lg hover:bg-primary/20 transition-colors"

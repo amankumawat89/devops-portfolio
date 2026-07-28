@@ -149,15 +149,17 @@ export default function ProjectModal({ project, onClose }: Props) {
             </div>
 
             <div className="flex items-center gap-3 pt-4 border-t border-border/50">
-              <a
-                href={project.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-surface-secondary border border-border text-text text-sm font-medium rounded-lg hover:bg-surface-secondary/80 transition-colors"
-              >
-                <Github size={15} />
-                View on GitHub
-              </a>
+              {project.github && (
+                <a
+                  href={project.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-surface-secondary border border-border text-text text-sm font-medium rounded-lg hover:bg-surface-secondary/80 transition-colors"
+                >
+                  <Github size={15} />
+                  View on GitHub
+                </a>
+              )}
               {project.liveDemo && (
                 <a
                   href={project.liveDemo}
