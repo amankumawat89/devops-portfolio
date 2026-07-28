@@ -41,7 +41,7 @@ export default function Resume() {
                 {/* Header */}
                 <div className="flex items-start gap-5 mb-8 pb-8 border-b border-border/50">
                   <img
-                    src="/profile.jpg"
+                    src={`${import.meta.env.BASE_URL}profile.jpg`}
                     alt={config.name}
                     className="w-20 h-20 rounded-2xl object-cover border border-border/50 flex-shrink-0"
                   />
@@ -133,7 +133,7 @@ export default function Resume() {
             {/* Action Panel */}
             <div className="lg:sticky lg:top-24 space-y-4">
               <a
-                href="/resume.pdf"
+                href={`${import.meta.env.BASE_URL}resume.pdf`}
                 download
                 className="flex items-center gap-3 w-full px-5 py-4 bg-primary text-white font-semibold text-sm rounded-xl hover:bg-primary/90 transition-all duration-200 shadow-glow"
               >
@@ -217,7 +217,7 @@ export default function Resume() {
                 <div className="w-px h-5 bg-border mx-1" />
 
                 <a
-                  href="/resume.pdf"
+                  href={`${import.meta.env.BASE_URL}resume.pdf`}
                   download
                   className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-surface-secondary text-text-secondary hover:text-text transition-colors"
                   aria-label="Download"
@@ -238,7 +238,7 @@ export default function Resume() {
             <div className="flex-1 overflow-auto bg-[#1a1a1a]">
               <div className="flex justify-center py-6 min-h-full">
                 <iframe
-                  src={`/resume.pdf#zoom=${zoom * 100}`}
+                  src={`${import.meta.env.BASE_URL}resume.pdf#zoom=${zoom * 100}`}
                   className="w-full max-w-4xl h-full min-h-[80vh] border border-border/30 rounded-lg"
                   style={{ transform: `scale(${zoom})`, transformOrigin: 'top center' }}
                   title="Resume PDF"

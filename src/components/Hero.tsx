@@ -10,7 +10,7 @@ export default function Hero() {
       <div className="section-container relative z-10 text-center">
         <div className="mb-8">
           <img
-            src="/profile.jpg"
+            src={`${import.meta.env.BASE_URL}profile.jpg`}
             alt={config.name}
             className="w-28 h-28 rounded-full object-cover border-2 border-primary/30 shadow-glow mx-auto"
           />
