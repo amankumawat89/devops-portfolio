@@ -38,7 +38,7 @@ export const config: Config = {
   email: 'kumawataman86@gmail.com',
   github: 'https://github.com/amankumawat89',
   linkedin: 'https://www.linkedin.com/in/aman-kumawat-301278353',
-  location: 'India',
+  location: 'Noida, India',
   about: 'Passionate DevOps & Cloud enthusiast with hands-on experience in Kubernetes, Docker, Jenkins, Azure Cloud, Linux, CI/CD pipelines, and automation. I enjoy building scalable infrastructure, automating deployments, and solving real-world cloud problems.',
 };
 
@@ -46,6 +46,9 @@ export const skills: Skill[] = [
   { name: 'Docker', icon: 'container', category: 'containers' },
   { name: 'Kubernetes', icon: 'network', category: 'containers' },
   { name: 'Jenkins', icon: 'git-branch', category: 'cicd' },
+  { name: 'GitHub Actions', icon: 'git-branch', category: 'cicd' },
+  { name: 'ArgoCD', icon: 'git-branch', category: 'cicd' },
+  { name: 'Ansible', icon: 'terminal', category: 'cicd' },
   { name: 'Linux', icon: 'terminal', category: 'infrastructure' },
   { name: 'Python', icon: 'code-2', category: 'programming' },
   { name: 'Azure Cloud', icon: 'cloud', category: 'cloud' },
@@ -98,7 +101,7 @@ export const projects: Project[] = [
       'kubectl Integration',
     ],
     challenges: 'Integrating Gemini AI to understand Kubernetes-specific error patterns required careful prompt engineering and context window management. Parsing raw pod logs into structured data for AI analysis was initially unreliable.',
-    github: 'https://github.com/amankumawat89',
+    github: '',
     screenshot: '/images/k8s-analyzer/Screenshot 2026-05-20 143241.png',
     screenshots: [
       '/images/k8s-analyzer/Screenshot 2026-05-20 120957.png',
@@ -133,7 +136,7 @@ export const projects: Project[] = [
       'Build History',
     ],
     challenges: 'Configuring Jenkins to work with Docker-based Tomcat instances required solving network isolation issues between build agents and deployment targets. Optimizing pipeline speed while maintaining reliability was an ongoing process.',
-    github: 'https://github.com/amankumawat89',
+    github: '',
     screenshot: '/images/jenkins-deployment/Screenshot 2026-05-20 122829.png',
     screenshots: [
       '/images/jenkins-deployment/Screenshot 2026-05-20 122829.png',
@@ -157,7 +160,7 @@ export const projects: Project[] = [
       'Public Endpoint',
     ],
     challenges: 'Setting up proper CORS rules and cache headers for Azure Blob Storage required understanding the difference between container-level and blob-level configurations. Ensuring HTTPS-only access added another layer of configuration.',
-    github: 'https://github.com/amankumawat89',
+    github: '',
     screenshot: '/images/website-hosting/Screenshot 2026-05-20 122124.png',
     screenshots: [
       '/images/website-hosting/Screenshot 2026-05-20 122124.png',
