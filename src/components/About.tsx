@@ -1,5 +1,14 @@
-import { Briefcase, GraduationCap, MapPin } from 'lucide-react';
+import { Briefcase, GraduationCap, MapPin, GraduationCap as Cap, Cloud, Container, Settings, Calendar } from 'lucide-react';
 import { config } from '../data/portfolio';
+
+const snapshot = [
+  { icon: Cap, label: 'B.Tech Computer Science' },
+  { icon: Cloud, label: 'Cloud & DevOps Intern' },
+  { icon: Container, label: 'Docker · Kubernetes · Azure' },
+  { icon: Settings, label: 'Jenkins · Linux · Python' },
+  { icon: MapPin, label: config.location },
+  { icon: Calendar, label: 'Resume updated: Jul 2026' },
+];
 
 const timeline = [
   {
@@ -38,6 +47,18 @@ export default function About() {
                   {config.about}
                 </p>
               </div>
+            </div>
+          </div>
+
+          <div className="glass-card p-6 mb-12">
+            <h3 className="text-xs font-bold text-text uppercase tracking-widest mb-4">Career Snapshot</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {snapshot.map((item, i) => (
+                <div key={i} className="flex items-center gap-3 px-3 py-2 bg-surface-secondary/50 rounded-lg">
+                  <item.icon size={15} className="text-primary flex-shrink-0" />
+                  <span className="text-sm text-text-secondary">{item.label}</span>
+                </div>
+              ))}
             </div>
           </div>
 
