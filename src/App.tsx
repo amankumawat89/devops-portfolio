@@ -11,7 +11,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <main>
+      <main className="pt-[var(--navbar-height)]">
         <Hero />
         <About />
         <Skills />
