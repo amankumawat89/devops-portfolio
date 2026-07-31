@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: aman07cr/devops-portfolio
-  tag: 19
+  tag: 20
   pullPolicy: Always
 
 service:
