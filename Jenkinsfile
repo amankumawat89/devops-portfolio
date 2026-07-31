@@ -40,8 +40,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 sh """
-                docker build \
-                -t ${IMAGE_NAME}:${IMAGE_TAG} .
+                docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .
                 """
             }
         }
@@ -53,7 +52,6 @@ pipeline {
                     usernameVariable: 'DOCKER_USER',
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
-
                     sh '''
                     echo "$DOCKER_PASS" | docker login \
                     -u "$DOCKER_USER" \
@@ -74,16 +72,13 @@ pipeline {
         stage('Update Helm values.yaml') {
             steps {
                 sh """
-                sed -i 's/tag:.*/tag: ${IMAGE_TAG}/' \
-                k8s/portfolio-chart/values.yaml
-
+                sed -i 's/tag:.*/tag: ${IMAGE_TAG}/' k8s/portfolio-chart/values.yaml
                 cat k8s/portfolio-chart/values.yaml
                 """
             }
         }
 
         stage('Commit & Push Helm Changes') {
-
             steps {
 
                 withCredentials([usernamePassword(
@@ -92,18 +87,26 @@ pipeline {
                     passwordVariable: 'GITHUB_TOKEN'
                 )]) {
 
-                    sh """
+                    sh '''
+                        # Configure Git
                         git config user.name "Jenkins"
                         git config user.email "jenkins@local"
 
+                        # Create local main branch from origin/main
+                        git fetch origin
+                        git checkout -B main origin/main
+
+                        # Update values.yaml again after checkout
+                        sed -i "s/tag:.*/tag: ${BUILD_NUMBER}/" k8s/portfolio-chart/values.yaml
+
                         git add k8s/portfolio-chart/values.yaml
 
-                        git commit -m "Update image tag to ${IMAGE_TAG}" || true
+                        git commit -m "Update image tag to ${BUILD_NUMBER}" || echo "Nothing to commit"
 
                         git remote set-url origin https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/amankumawat89/devops-portfolio.git
 
                         git push origin main
-                    """
+                    '''
                 }
             }
         }
@@ -112,10 +115,12 @@ pipeline {
     post {
 
         success {
+            echo "======================================="
+            echo "Pipeline completed successfully!"
             echo "Docker Image: ${IMAGE_NAME}:${IMAGE_TAG}"
-            echo "Helm values.yaml updated"
-            echo "Changes pushed to GitHub"
-            echo "Argo CD will automatically sync"
+            echo "GitHub updated."
+            echo "Argo CD will now sync automatically."
+            echo "======================================="
         }
 
         failure {
