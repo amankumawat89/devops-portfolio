@@ -65,11 +65,13 @@ pipeline {
 
         stage('Docker Login') {
             steps {
-                withCredentials([usernamePassword(
-                    credentialsId: 'dockerhub-creds',
-                    usernameVariable: 'DOCKER_USER',
-                    passwordVariable: 'DOCKER_PASS'
-                )]) {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'dockerhub-creds',
+                        usernameVariable: 'DOCKER_USER',
+                        passwordVariable: 'DOCKER_PASS'
+                    )
+                ]) {
                     sh '''
                         echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
                     '''
@@ -96,29 +98,38 @@ pipeline {
 
         stage('Commit & Push Helm Changes') {
             steps {
-                withCredentials([usernamePassword(
-                    credentialsId: 'github-creds',
-                    usernameVariable: 'GITHUB_USER',
-                    passwordVariable: 'GITHUB_TOKEN'
-                )]) {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'github-creds',
+                        usernameVariable: 'GITHUB_USER',
+                        passwordVariable: 'GITHUB_TOKEN'
+                    )
+                ]) {
                     sh '''
                         git config user.name "Jenkins"
                         git config user.email "jenkins@local"
 
+                        git remote set-url origin https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/amankumawat89/devops-portfolio.git
+
+                        # Fetch latest changes
+                        git fetch origin
+
+                        # Create local branch tracking origin/main
+                        git checkout -B main origin/main
+
+                        # Stage Helm values file
                         git add k8s/portfolio-chart/values.yaml
 
+                        # Skip if nothing changed
                         if git diff --cached --quiet; then
                             echo "No Helm changes to commit."
                             exit 0
                         fi
 
-                        git commit -m "Update image tag to '${IMAGE_TAG}'"
+                        # Commit and push
+                        git commit -m "Update image tag to ${IMAGE_TAG}"
 
-                        git checkout main
-
-                        git remote set-url origin https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/amankumawat89/devops-portfolio.git
-
-                        git push origin main
+                        git push origin HEAD:main
                     '''
                 }
             }
