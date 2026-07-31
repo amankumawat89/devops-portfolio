@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'NodeJS-22'
+        nodejs "NodeJS"
     }
 
     environment {
@@ -15,6 +15,24 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scm
+            }
+        }
+
+        stage('Skip Jenkins Auto Commit') {
+            steps {
+                script {
+                    def commitMsg = sh(
+                        script: "git log -1 --pretty=%s",
+                        returnStdout: true
+                    ).trim()
+
+                    echo "Latest Commit: ${commitMsg}"
+
+                    if (commitMsg.startsWith("Update image tag to")) {
+                        currentBuild.result = "NOT_BUILT"
+                        error("Skipping Jenkins auto-generated commit.")
+                    }
+                }
             }
         }
 
@@ -40,7 +58,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 sh """
-                docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .
+                    docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .
                 """
             }
         }
@@ -53,9 +71,7 @@ pipeline {
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
                     sh '''
-                    echo "$DOCKER_PASS" | docker login \
-                    -u "$DOCKER_USER" \
-                    --password-stdin
+                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
                     '''
                 }
             }
@@ -64,7 +80,7 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 sh """
-                docker push ${IMAGE_NAME}:${IMAGE_TAG}
+                    docker push ${IMAGE_NAME}:${IMAGE_TAG}
                 """
             }
         }
@@ -72,36 +88,33 @@ pipeline {
         stage('Update Helm values.yaml') {
             steps {
                 sh """
-                sed -i 's/tag:.*/tag: ${IMAGE_TAG}/' k8s/portfolio-chart/values.yaml
-                cat k8s/portfolio-chart/values.yaml
+                    sed -i 's/tag:.*/tag: ${IMAGE_TAG}/' k8s/portfolio-chart/values.yaml
+                    cat k8s/portfolio-chart/values.yaml
                 """
             }
         }
 
         stage('Commit & Push Helm Changes') {
             steps {
-
                 withCredentials([usernamePassword(
                     credentialsId: 'github-creds',
                     usernameVariable: 'GITHUB_USER',
                     passwordVariable: 'GITHUB_TOKEN'
                 )]) {
-
                     sh '''
-                        # Configure Git
                         git config user.name "Jenkins"
                         git config user.email "jenkins@local"
 
-                        # Create local main branch from origin/main
-                        git fetch origin
-                        git checkout -B main origin/main
-
-                        # Update values.yaml again after checkout
-                        sed -i "s/tag:.*/tag: ${BUILD_NUMBER}/" k8s/portfolio-chart/values.yaml
-
                         git add k8s/portfolio-chart/values.yaml
 
-                        git commit -m "Update image tag to ${BUILD_NUMBER}" || echo "Nothing to commit"
+                        if git diff --cached --quiet; then
+                            echo "No Helm changes to commit."
+                            exit 0
+                        fi
+
+                        git commit -m "Update image tag to '${IMAGE_TAG}'"
+
+                        git checkout main
 
                         git remote set-url origin https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/amankumawat89/devops-portfolio.git
 
@@ -113,18 +126,19 @@ pipeline {
     }
 
     post {
-
         success {
-            echo "======================================="
             echo "Pipeline completed successfully!"
             echo "Docker Image: ${IMAGE_NAME}:${IMAGE_TAG}"
-            echo "GitHub updated."
-            echo "Argo CD will now sync automatically."
-            echo "======================================="
+            echo "Helm values updated."
+            echo "Changes pushed to GitHub."
         }
 
         failure {
             echo "Pipeline Failed!"
+        }
+
+        aborted {
+            echo "Pipeline skipped because it was triggered by a Jenkins-generated commit."
         }
     }
 }
